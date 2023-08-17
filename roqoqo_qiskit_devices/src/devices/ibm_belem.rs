@@ -12,11 +12,11 @@
 
 use std::collections::HashMap;
 
-use roqoqo::{devices::QoqoDevice, RoqoqoError};
+use roqoqo::devices::QoqoDevice;
 
-use ndarray::{array, Array2};
+use ndarray::Array2;
 
-use crate::IBMDevice;
+use crate::{IBMDevice, IBMDeviceTrait};
 
 #[derive(Debug, PartialEq, Clone, serde::Serialize, serde::Deserialize)]
 pub struct IBMBelemDevice {
@@ -67,15 +67,6 @@ impl IBMBelemDevice {
 
         device
     }
-
-    /// Returns the IBM's identifier.
-    ///
-    /// # Returns
-    ///
-    /// A str of the name IBM uses as identifier.
-    pub fn name(&self) -> &'static str {
-        "ibmq_belem"
-    }
 }
 
 impl Default for IBMBelemDevice {
@@ -96,144 +87,41 @@ impl From<IBMBelemDevice> for IBMDevice {
     }
 }
 
-impl IBMBelemDevice {
-    /// Setting the gate time of a single qubit gate.
+impl IBMDeviceTrait for IBMBelemDevice {
+    /// Returns the IBM's identifier.
     ///
-    /// # Arguments
+    /// # Returns
     ///
-    /// * `gate` - hqslang name of the single-qubit-gate.
-    /// * `qubit` - The qubit for which the gate time is set.
-    /// * `gate_time` - gate time for the given gate.
-    pub fn set_single_qubit_gate_time(
-        &mut self,
-        gate: &str,
-        qubit: usize,
-        gate_time: f64,
-    ) -> Result<(), RoqoqoError> {
-        if qubit >= self.number_qubits {
-            return Err(RoqoqoError::GenericError {
-                msg: format!(
-                    "Qubit {} larger than number qubits {}",
-                    qubit, self.number_qubits
-                ),
-            });
-        }
-        match self.single_qubit_gates.get_mut(gate) {
-            Some(gate_times) => {
-                let gatetime = gate_times.entry(qubit).or_insert(gate_time);
-                *gatetime = gate_time;
-            }
-            None => {
-                let mut new_map = HashMap::new();
-                new_map.insert(qubit, gate_time);
-                self.single_qubit_gates.insert(gate.to_string(), new_map);
-            }
-        }
-        Ok(())
+    /// A str of the name IBM uses as identifier.
+    fn name(&self) -> &'static str {
+        "ibmq_belem"
     }
 
-    /// Setting the gate time of a two qubit gate.
+    /// Returns the IBM's identifier.
     ///
-    /// # Arguments
+    /// # Returns
     ///
-    /// * `gate` - hqslang name of the two-qubit-gate.
-    /// * `control` - The control qubit for which the gate time is set.
-    /// * `target` - The target qubit for which the gate time is set.
-    /// * `gate_time` - gate time for the given gate.
-    pub fn set_two_qubit_gate_time(
-        &mut self,
-        gate: &str,
-        control: usize,
-        target: usize,
-        gate_time: f64,
-    ) -> Result<(), RoqoqoError> {
-        if control >= self.number_qubits {
-            return Err(RoqoqoError::GenericError {
-                msg: format!(
-                    "Qubit {} larger than number qubits {}",
-                    control, self.number_qubits
-                ),
-            });
-        }
-        if target >= self.number_qubits {
-            return Err(RoqoqoError::GenericError {
-                msg: format!(
-                    "Qubit {} larger than number qubits {}",
-                    target, self.number_qubits
-                ),
-            });
-        }
-        if !self
-            .two_qubit_edges()
-            .iter()
-            .any(|&(a, b)| (a, b) == (control, target) || (a, b) == (target, control))
-        {
-            return Err(RoqoqoError::GenericError {
-                msg: format!(
-                    "Qubits {} and {} are not connected in the device",
-                    control, target
-                ),
-            });
-        }
-
-        match self.two_qubit_gates.get_mut(gate) {
-            Some(gate_times) => {
-                let gatetime = gate_times.entry((control, target)).or_insert(gate_time);
-                *gatetime = gate_time;
-            }
-            None => {
-                let mut new_map = HashMap::new();
-                new_map.insert((control, target), gate_time);
-                self.two_qubit_gates.insert(gate.to_string(), new_map);
-            }
-        }
-        Ok(())
+    /// A str of the name IBM uses as identifier.
+    fn single_qubit_gates(&mut self) -> &mut HashMap<String, HashMap<usize, f64>> {
+        &mut self.single_qubit_gates
     }
 
-    /// Adds qubit damping to noise rates.
+    /// Returns the IBM's identifier.
     ///
-    /// # Arguments
+    /// # Returns
     ///
-    /// * `qubit` - The qubit for which the dampins is added.
-    /// * `daming` - The damping rates.
-    pub fn add_damping(&mut self, qubit: usize, damping: f64) -> Result<(), RoqoqoError> {
-        if qubit > self.number_qubits {
-            return Err(RoqoqoError::GenericError {
-                msg: format!(
-                    "Qubit {} out of range for device of size {}",
-                    qubit, self.number_qubits
-                ),
-            });
-        }
-        let aa = self
-            .decoherence_rates
-            .entry(qubit)
-            .or_insert_with(|| Array2::zeros((3, 3)));
-        *aa = aa.clone() + array![[damping, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];
-        Ok(())
+    /// A str of the name IBM uses as identifier.
+    fn two_qubit_gates(&mut self) -> &mut HashMap<String, TwoQubitGates> {
+        &mut self.two_qubit_gates
     }
 
-    /// Adds qubit dephasing to noise rates.
+    /// Returns the IBM's identifier.
     ///
-    /// # Arguments
+    /// # Returns
     ///
-    /// * `qubit` - The qubit for which the dephasing is added.
-    /// * `dephasing` - The dephasing rates.
-    pub fn add_dephasing(&mut self, qubit: usize, dephasing: f64) -> Result<(), RoqoqoError> {
-        if qubit > self.number_qubits {
-            return Err(RoqoqoError::GenericError {
-                msg: format!(
-                    "Qubit {} out of range for device of size {}",
-                    qubit, self.number_qubits
-                ),
-            });
-        }
-        let aa = self
-            .decoherence_rates
-            .entry(qubit)
-            .or_insert_with(|| Array2::zeros((3, 3)));
-        *aa = aa.clone() + array![[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, dephasing]];
-        Ok(())
+    /// A str of the name IBM uses as identifier.
+    fn decoherence_rates(&mut self) -> &mut HashMap<usize, Array2<f64>> {
+        &mut self.decoherence_rates
     }
 }
 
@@ -305,31 +193,6 @@ impl QoqoDevice for IBMBelemDevice {
     ///
     fn two_qubit_gate_names(&self) -> Vec<String> {
         vec!["CNOT".to_string()]
-    }
-
-    /// Returns the gate time of a three qubit operation if the three qubit operation is available on device.
-    ///
-    /// # Arguments
-    ///
-    /// * `hqslang` - The hqslang name of a two qubit gate.
-    /// * `control_0` - The control_0 qubit the gate acts on.
-    /// * `control_1` - The control_1 qubit the gate acts on.
-    /// * `target` - The target qubit the gate acts on.
-    ///
-    /// # Returns
-    ///
-    /// * `Some<f64>` - The gate time.
-    /// * `None` - The gate is not available on the device.
-    ///
-    #[allow(unused_variables)]
-    fn three_qubit_gate_time(
-        &self,
-        hqslang: &str,
-        control_0: &usize,
-        control_1: &usize,
-        target: &usize,
-    ) -> Option<f64> {
-        None
     }
 
     /// Returns the gate time of a multi qubit operation if the multi qubit operation is available on device.

@@ -13,7 +13,7 @@ requires-python = ">=3.10"
 dependencies = [
     "qoqo>=1.21",
     "qoqo_qasm>=0.14",
-    "qiskit>=2.2,<=2.5.2",
+    "qiskit>2.4.2,<=2.5.2",
     "qiskit_aer>=0.17,<0.18",
     "qiskit_ibm_runtime>=0.41,<=0.50",
     "numpy",

@@ -125,13 +125,13 @@ def test_medium_circuit_backend() -> None:
 
     circuit_res = Circuit()
     circuit_res += ops.PauliX(0)
-    circuit_res += ops.RotateZ(1, 1.5707963267948966)
+    circuit_res += ops.RotateZ(1, 0.7853981633974483)
     circuit_res += ops.SqrtPauliX(1)
     circuit_res += ops.RotateZ(1, 1.5707963267948966)
     circuit_res += ops.CNOT(0, 1)
     circuit_res += ops.RotateZ(1, -1.5707963267948966)
     circuit_res += ops.SqrtPauliX(1)
-    circuit_res += ops.RotateZ(1, 1.5707963267948966)
+    circuit_res += ops.RotateZ(1, 0.7853981633974483)
 
     backend = FakeManilaV2()
     transpiled_circuit = transpile_with_qiskit(
@@ -164,13 +164,13 @@ def test_multiple_circuits_backend() -> None:
 
     circuit_res_2 = Circuit()
     circuit_res_2 += ops.PauliX(0)
-    circuit_res_2 += ops.RotateZ(1, 1.5707963267948966)
+    circuit_res_2 += ops.RotateZ(1, 0.7853981633974483)
     circuit_res_2 += ops.SqrtPauliX(1)
     circuit_res_2 += ops.RotateZ(1, 1.5707963267948966)
     circuit_res_2 += ops.CNOT(0, 1)
     circuit_res_2 += ops.RotateZ(1, -1.5707963267948966)
     circuit_res_2 += ops.SqrtPauliX(1)
-    circuit_res_2 += ops.RotateZ(1, 1.5707963267948966)
+    circuit_res_2 += ops.RotateZ(1, 0.7853981633974483)
 
     backend = FakeManilaV2()
     transpiled_circuits = transpile_with_qiskit(
@@ -182,7 +182,8 @@ def test_multiple_circuits_backend() -> None:
     transpiled_circuit_dag = transpiled_circuit_dag.from_circuit(transpiled_circuits[1])
     circuit_res_dag = circuit_res_dag.from_circuit(circuit_res_2)
 
-    assert transpiled_circuits[0] == circuit_res_1 and transpiled_circuit_dag == circuit_res_dag
+    assert transpiled_circuits[0] == circuit_res_1
+    assert transpiled_circuit_dag == circuit_res_dag
 
 
 def assert_quantum_program_equal(
@@ -275,13 +276,18 @@ def test_program_with_constant_circuit_basic_gates() -> None:
     circuit_2 += ops.CNOT(0, 1)
 
     circuit_res_2 = Circuit()
-    circuit_res_2 += ops.RotateZ(0, 1.5707963267948966)
+    circuit_res_2 += ops.RotateZ(0, -1.5707963267948966)
     circuit_res_2 += ops.SqrtPauliX(0)
-    circuit_res_2 += ops.RotateZ(0, 1.5707963267948966)
-    circuit_res_2 += ops.ControlledPauliZ(0, 1)
-    circuit_res_2 += ops.RotateZ(1, 1.5707963267948966)
+    circuit_res_2 += ops.RotateZ(0, -1.977910501509859)
     circuit_res_2 += ops.SqrtPauliX(1)
-    circuit_res_2 += ops.RotateZ(1, 1.5707963267948966)
+    circuit_res_2 += ops.SqrtPauliX(1)
+    circuit_res_2 += ops.ControlledPauliZ(0, 1)
+    circuit_res_2 += ops.SqrtPauliX(0)
+    circuit_res_2 += ops.SqrtPauliX(0)
+    circuit_res_2 += ops.RotateZ(0, -0.40711417471496336)
+    circuit_res_2 += ops.RotateZ(1, -1.5707963267948966)
+    circuit_res_2 += ops.SqrtPauliX(1)
+    circuit_res_2 += ops.RotateZ(1, -1.5707963267948966)
 
     measurement_input = CheatedPauliZProductInput()
     measurement = CheatedPauliZProduct(
@@ -322,13 +328,13 @@ def test_quantum_program_backend() -> None:
 
     circuit_res_2 = Circuit()
     circuit_res_2 += ops.PauliX(0)
-    circuit_res_2 += ops.RotateZ(1, 1.5707963267948966)
+    circuit_res_2 += ops.RotateZ(1, 0.7853981633974483)
     circuit_res_2 += ops.SqrtPauliX(1)
     circuit_res_2 += ops.RotateZ(1, 1.5707963267948966)
     circuit_res_2 += ops.CNOT(0, 1)
     circuit_res_2 += ops.RotateZ(1, -1.5707963267948966)
     circuit_res_2 += ops.SqrtPauliX(1)
-    circuit_res_2 += ops.RotateZ(1, 1.5707963267948966)
+    circuit_res_2 += ops.RotateZ(1, 0.7853981633974483)
 
     circuit_3 = Circuit()
     circuit_3 += ops.TGate(0)
@@ -388,11 +394,16 @@ def test_quantum_program_with_constant_circuit_backend() -> None:
     circuit_res_2 = Circuit()
     circuit_res_2 += ops.RotateZ(0, -1.5707963267948966)
     circuit_res_2 += ops.SqrtPauliX(0)
-    circuit_res_2 += ops.RotateZ(0, 1.5707963267948966)
-    circuit_res_2 += ops.CNOT(0, 1)
+    circuit_res_2 += ops.RotateZ(0, -1.5707963267948966)
     circuit_res_2 += ops.RotateZ(1, -1.5707963267948966)
     circuit_res_2 += ops.SqrtPauliX(1)
+    circuit_res_2 += ops.RotateZ(1, -1.128795123643009)
+    circuit_res_2 += ops.SqrtPauliX(1)
     circuit_res_2 += ops.RotateZ(1, 1.5707963267948966)
+    circuit_res_2 += ops.CNOT(0, 1)
+    circuit_res_2 += ops.RotateZ(1, 1.5707963267948966)
+    circuit_res_2 += ops.SqrtPauliX(1)
+    circuit_res_2 += ops.RotateZ(1, -0.4420012031518863)
 
     circuit_3 = Circuit()
     circuit_3 += ops.TGate(0)

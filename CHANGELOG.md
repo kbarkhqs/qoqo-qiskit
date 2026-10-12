@@ -6,8 +6,9 @@ This changelog tracks changes of the qoqo_qiskit project starting at version 0.1
 
 ### Updated in 0.14.0
 
-* Updated qiskit requirement from `"qiskit>=2.2,<2.3"` to `"qiskit>=2.2,<=2.5.2"`.
-* Updated qiskit-ibm-runtime requirement from `"qiskit_ibm_runtime>=0.41,<0.42"` to `"qiskit_ibm_runtime>=0.41,<=0.50"`
+* Updated qiskit requirement from `"qiskit>=2.2,<2.3"` to `"qiskit>2.4.2,<=2.5.2"`.
+* Updated qiskit-ibm-runtime requirement from `"qiskit_ibm_runtime>=0.41,<0.42"` to `"qiskit_ibm_runtime>=0.41,<=0.50"`.
+* Updated tests to use qiskit 2.5.0 decompositions.
 
 ## 0.13.0
 

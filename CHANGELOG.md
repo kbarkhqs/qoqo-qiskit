@@ -2,9 +2,16 @@
 
 This changelog tracks changes of the qoqo_qiskit project starting at version 0.1.0 (initial release).
 
+## 0.14.0
+
+### Updated in 0.14.0
+
+* Updated qiskit requirement from `"qiskit>=2.2,<2.3"` to `"qiskit>=2.2,<=2.5.2"`.
+* Updated qiskit-ibm-runtime requirement from `"qiskit_ibm_runtime>=0.41,<0.42"` to `"qiskit_ibm_runtime>=0.41,<=0.50"`
+
 ## 0.13.0
 
-### Updated in 0.13.0
+### Added in 0.13.0
 
 * Added the `get_qoqo_noise_models_from_aer_noise_model` and `qoqo_device_from_qiskit_backend` functions.
 

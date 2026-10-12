@@ -1,21 +1,21 @@
 [project]
 name = "qoqo_qiskit"
-version = "0.13.0"
+version = "0.14.0"
 license = { file = "LICENSE" }
 authors = [
     { name = "HQS Quantum Simulation GmbH", email = "info@quantumsimulations.de" },
 ]
 maintainers = [
-    { name = "Matteo Lodi", email = "matteo.lodi@quantumsimulations.de" },
+    { name = "Kirsten Bark", email = "kirsten.bark@quantumsimulations.de" },
 ]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "qoqo>=1.21",
     "qoqo_qasm>=0.14",
-    "qiskit>=2.2,<2.3",
+    "qiskit>=2.2,<=2.5.2",
     "qiskit_aer>=0.17,<0.18",
-    "qiskit_ibm_runtime>=0.41,<0.42",
+    "qiskit_ibm_runtime>=0.41,<=0.50",
     "numpy",
     "struqture_py>=2.0.0",
 ]

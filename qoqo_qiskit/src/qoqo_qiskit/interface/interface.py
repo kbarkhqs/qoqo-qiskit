@@ -42,7 +42,7 @@ def to_qiskit_circuit(
     input_qasm_str = qasm_backend.circuit_to_qasm_str(filtered_circuit)
 
     # QASM -> Qiskit transformation
-    return_circuit = QuantumCircuit()
+    return_circuit: QuantumCircuit
     from_qasm_circuit = QuantumCircuit.from_qasm_str(input_qasm_str)
 
     # Fixing custom gates qiskit translation
